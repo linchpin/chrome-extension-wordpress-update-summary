@@ -18,6 +18,6 @@ This Chrome extension uses a few simple `querySelectorAll()` calls to parse the 
 
 **A:** This plugin limits visibility to (`wp-admin/plugins.php` | `wp-admin/network/plugins.php`). It does not technically interact with the install in any way other than reading the contents of the DOM for that current page. And is limited to strictly the plugin list table itself.
 
-**Q:** How do I know this extension isn't doing something malicous
+**Q:** How do I know this extension isn't doing something malicous or stealing my logins and info and other scary things?
 
 **A:** All the code is within this repo, take a look. The extension is very simple in how it works. But witht hat being said, use at your own risk.
