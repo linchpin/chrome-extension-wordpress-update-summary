@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #results {
+        margin:20px;
+      }
+      @import url(https://fonts.googleapis.com/css?family=Monserrat:400,600);
+
+      *, *:before, *:after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #efefef;
+        font-family: 'Monserrat', sans-serif;
+      }
+      table {
+        background: #fff;
+        border-collapse: collapse;
+        margin: 1em;
+      }
+      th {
+        border-bottom: 1px solid #efefef;
+        color: #3fc1d0;
+        font-size: 0.85em;
+        font-weight: 600;
+        padding: 0.5em 1em;
+        text-align: left;
+      }
+      td {
+        color: #333;
+        font-weight: 400;
+        padding: 0.65em 1em;
+      }
+      .disabled td {
+        color: #ccc;
+      }
+      tbody tr {
+        transition: background 0.25s ease;
+      }
+      tbody tr:hover {
+        background: #3fc1d0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="report-header">
+      <h2>WordPress Plugin Report</h2>
+    </div>
+    <div id="results"></div>
+    <div id="report-footer">
+      <div>Linchpin Logo, Copy Right | Link to github | Linchpin linchpin.com</div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

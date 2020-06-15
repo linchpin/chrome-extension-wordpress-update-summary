@@ -1,0 +1,41 @@
+{
+  "name": "WordPress Plugin Update Report",
+  "version": "0.5.2",
+  "description": "Quickly provide a list of available WordPress plugin updates when viewing the plugin listings. Copy to html, csv or composer.json format",
+  "homepage_url": "https://linchpin.tools",
+  "permissions": [ "tabs", "activeTab", "declarativeContent", "contextMenus", "nativeMessaging", "storage", "https://*/*", "https://*/*" ],
+
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "matches": [
+        "*://*/*wp-admin/plugins.php*",
+        "*://*/*wp-admin/network/plugins.php*",
+        "*://*/*wp-admin/update-core.php*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/report16.png",
+      "32": "images/report32.png",
+      "48": "images/report48.png",
+      "128": "images/report128.png"
+    },
+    "default_title": "WordPress Plugin Update Report"
+  },
+  "icons": {
+    "16": "images/report16.png",
+    "32": "images/report32.png",
+    "48": "images/report48.png",
+    "128": "images/report128.png"
+  },
+  "manifest_version": 2
+}
