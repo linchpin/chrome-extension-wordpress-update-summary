@@ -13,10 +13,15 @@ let data = {}
  * to a showResults callback that is used to populate popup.html
  */
 const getResults = () => {
+
+    console.log( 'getResults');
+
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, {action: "getWordPressUpdates"}, (response) => {
             storeResults(response);
             showResults(response);
+
+            console.log( response );
         });
     });
 }
@@ -32,6 +37,7 @@ const storeResults = ( response ) => {
  */
 const showResults = ( response ) => {
     if ( response ) {
+
         let jsonTable = json2table(response);
 
         let resultsElement = document.getElementById("results");
@@ -41,6 +47,9 @@ const showResults = ( response ) => {
             menu.id        = "control-menu";
             menu.className = "control-menu";
             resultsElement.append( menu );
+
+        document.getElementById("report-handler").classList.remove('hide');
+        document.getElementById("report-warning").classList.add('hide');
 
         buildControls();
     }
@@ -97,6 +106,11 @@ const capitalizeFirstLetter = ( string ) => {
  * @return {string}
  */
 const json2table = ( json, classes ) => {
+
+    if ( ! json[0] ) {
+        return 'Invalid Json';
+    }
+
     let cols      = Object.keys( json[0] );
     let headerRow = '';
     let bodyRows  = '';
@@ -147,6 +161,11 @@ const copyChangelogReport = () => {
     let bodyRows = '';
 
     data.map( ( row ) => {
+
+        if ( ! row.plugin ) {
+            return
+        }
+
         bodyRows += '* Updated "' + row.plugin + '" from version ' + row.currentVersion + ' to ' + row.nextVersion + "\n";
     } );
 

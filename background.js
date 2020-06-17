@@ -13,6 +13,9 @@ chrome.runtime.onInstalled.addListener(function () {
                     new chrome.declarativeContent.PageStateMatcher({
                         pageUrl: {urlContains: 'wp-admin/network/plugins.php'},
                     }),
+                    new chrome.declarativeContent.PageStateMatcher({
+                        pageUrl: {urlContains: 'wp-admin/update-core.php'},
+                    }),
                 ],
                 // Show the extension's page action.
                 actions: [new chrome.declarativeContent.ShowPageAction()]
@@ -24,21 +27,21 @@ chrome.runtime.onInstalled.addListener(function () {
 chrome.tabs.onActivated.addListener((info) => {
     chrome.tabs.get(info.tabId, (change) => {
         if (typeof (change) !== 'undefined' && !change.url) {
-            chrome.browserAction.setIcon({path: './images/report16.png', tabId: info.tabId});
-        } else if (typeof (change) !== 'undefined' && change.url.match(/wp-admin(\/network)?\/plugins\.php/) == null) {
-            chrome.browserAction.setIcon({path: './images/report16.png', tabId: info.tabId});
+            chrome.browserAction.setIcon({path: './images/report32.png', tabId: info.tabId});
+        } else if (typeof (change) !== 'undefined' && change.url.match(/wp-admin(\/network)?\/(plugins|update-core)\.php/) == null) {
+            chrome.browserAction.setIcon({path: './images/report32.png', tabId: info.tabId});
         } else {
-            chrome.browserAction.setIcon({path: './images/report_active16.png', tabId: info.tabId});
+            chrome.browserAction.setIcon({path: './images/report_active32.png', tabId: info.tabId});
         }
     });
 });
 
 chrome.tabs.onUpdated.addListener(( tabId, change, tab ) => {
-    if (typeof (tab) === 'undefined' || !tab.url) {
+    if ( typeof (tab) === 'undefined' || ! tab.url ) {
         return;
-    } else if (tab.url.match(/wp-admin(\/network)?\/plugins\.php/) == null) {
-        chrome.browserAction.setIcon({path: './images/report16.png', tabId: tabId});
+    } else if (tab.url.match(/wp-admin(\/network)?\/(plugins|update-core)\.php/) == null) {
+        chrome.browserAction.setIcon({path: './images/report32.png', tabId: tabId});
     } else {
-        chrome.browserAction.setIcon({path: './images/report_active16.png', tabId: tabId});
+        chrome.browserAction.setIcon({path: './images/report_active32.png', tabId: tabId});
     }
 });

@@ -7,12 +7,6 @@
       }
       @import url(https://fonts.googleapis.com/css?family=Monserrat:400,600);
 
-      *, *:before, *:after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
       body {
         background: #efefef;
         font-family: 'Monserrat', sans-serif;
@@ -44,15 +38,33 @@
       tbody tr:hover {
         background: #3fc1d0;
       }
+
+      .show {
+        display:block;
+      }
+
+      .hide {
+        display:none;
+      }
     </style>
   </head>
   <body>
-    <div id="report-header">
-      <h2>WordPress Plugin Report</h2>
+    <div id="report-handler" class="hide">
+      <div id="report-header">
+        <h2>WordPress Plugin Report</h2>
+      </div>
+      <div id="results"></div>
+      <div id="report-footer">
+        <div>Linchpin Logo, Copy Right | Link to github | Linchpin linchpin.com</div>
+      </div>
     </div>
-    <div id="results"></div>
-    <div id="report-footer">
-      <div>Linchpin Logo, Copy Right | Link to github | Linchpin linchpin.com</div>
+    <div id="report-warning">
+      <p>In order for this extension to work, you need to visit your websites wp-admin area.</p>
+      <ul>
+        <li>wp-admin/network/plugins.php</li>
+        <li>wp-admin/plugins.php</li>
+        <li>wp-admin/update-core.php</li>
+      </ul>
     </div>
     <script src="popup.js"></script>
   </body>
