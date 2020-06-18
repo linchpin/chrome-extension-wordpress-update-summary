@@ -1,11 +1,34 @@
+function getCurrentTabUrl(callback) {
+    chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    }, (tabs) => {
+
+        let activeTab = tabs[0];
+
+        if ( typeof (activeTab) === 'undefined' || ! activeTab.url ) {
+            document.getElementById("report-handler").classList.add('hide');
+            document.getElementById("report-loader").classList.add('hide');
+            document.getElementById("report-warning").classList.remove('hide');
+        } else if (activeTab.url.match(/wp-admin(\/network)?\/(plugins|update-core)\.php/) == null) {
+            document.getElementById("report-handler").classList.add('hide');
+            document.getElementById("report-loader").classList.add('hide');
+            document.getElementById("report-warning").classList.remove('hide');
+        }
+
+        getResults();
+    });
+}
+
 /**
  * Listen for the content of the DOM to be DOMContentLoaded
  * once complete, get the contents of the admin page
  */
 document.addEventListener("DOMContentLoaded", function (event) {
-    setTimeout( getResults, 1000 );
+    getCurrentTabUrl();
 });
 
+let currentURL;
 let data = {}
 
 /**
@@ -13,15 +36,10 @@ let data = {}
  * to a showResults callback that is used to populate popup.html
  */
 const getResults = () => {
-
-    console.log( 'getResults');
-
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, {action: "getWordPressUpdates"}, (response) => {
             storeResults(response);
             showResults(response);
-
-            console.log( response );
         });
     });
 }
@@ -50,6 +68,7 @@ const showResults = ( response ) => {
 
         document.getElementById("report-handler").classList.remove('hide');
         document.getElementById("report-warning").classList.add('hide');
+        document.getElementById("report-loader").classList.add('hide');
 
         buildControls();
     }
