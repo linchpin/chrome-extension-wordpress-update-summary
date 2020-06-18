@@ -16,7 +16,7 @@ function getCurrentTabUrl(callback) {
             document.getElementById("report-warning").classList.remove('hide');
         }
 
-        getResults();
+        getResults(activeTab);
     });
 }
 
@@ -40,6 +40,8 @@ const getResults = () => {
         chrome.tabs.sendMessage(tabs[0].id, {action: "getWordPressUpdates"}, (response) => {
             storeResults(response);
             showResults(response);
+
+            chrome.browserAction.setBadgeText({text: (response.length).toString(), tabId: tabs[0].id});
         });
     });
 }

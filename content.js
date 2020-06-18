@@ -12,6 +12,8 @@ chrome.runtime.onMessage.addListener(
 // and what version it can be updated to
 const getWordPressUpdates = (request, sender, sendResponse) => {
 
+    let $body = document.querySelector('body');
+
     // plugin pages
     let updates = [];
     let updateElements = document.querySelectorAll('tr.update');
@@ -31,41 +33,38 @@ const getWordPressUpdates = (request, sender, sendResponse) => {
         updates.push(pluginData);
     });
 
+    // Only run this on the update-core.php
+    if ( $body.classList.contains('update-core-php') ) {
+        let updatablePlugins = document.querySelectorAll('td.plugin-title');
 
-    let updatablePlugins = document.querySelectorAll('td.plugin-title');
-
-    [...updatablePlugins].forEach((updateElement) => {
+        [...updatablePlugins].forEach((updateElement) => {
 
 
-        let pluginText = updateElement.getElementsByTagName('p')[0].textContent;
-        let pluginUpdatesAvailable = pluginText.match(/([0-9\.]{3,5})/gm);
+            let pluginText = updateElement.getElementsByTagName('p')[0].textContent;
+            let pluginUpdatesAvailable = pluginText.match(/([0-9\.]{3,5})/gm);
 
-        if (pluginUpdatesAvailable.length === 0) { // no version so bail
-            return;
-        }
+            if (pluginUpdatesAvailable.length === 0) { // no version so bail
+                return;
+            }
 
-        let updateUrl   = updateElement.querySelector('.open-plugin-details-modal');
+            let updateUrl   = updateElement.querySelector('.open-plugin-details-modal');
 
-        if ( updateUrl ) {
-            updateUrl = updateUrl.getAttribute( 'href'); // Themes don't have a link..
-        }
+            if ( updateUrl ) {
+                updateUrl = updateUrl.getAttribute( 'href'); // Themes don't have a link..
+            }
 
-        let urlParams   = new URLSearchParams( updateUrl );
+            let urlParams   = new URLSearchParams( updateUrl );
 
-        let pluginData = {
-            plugin: updateElement.querySelector('strong').textContent,
-            slug: urlParams.get('plugin'),
-            currentVersion: pluginUpdatesAvailable[0].replace(/\.$/, ''),
-            nextVersion: pluginUpdatesAvailable[1].replace(/\.$/, ''),
-        };
+            let pluginData = {
+                plugin: updateElement.querySelector('strong').textContent,
+                slug: urlParams.get('plugin'),
+                currentVersion: pluginUpdatesAvailable[0].replace(/\.$/, ''),
+                nextVersion: pluginUpdatesAvailable[1].replace(/\.$/, ''),
+            };
 
-        updates.push(pluginData);
-    });
-
-    console.log( updates );
-
-    // You have version 4.1.3 installed. Update to 4.1.6.
-    // Update WordPress Page
+            updates.push(pluginData);
+        });
+    }
 
     return sendResponse(updates);
 }
