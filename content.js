@@ -62,6 +62,26 @@ const getWordPressUpdates = (request, sender, sendResponse) => {
                 nextVersion: pluginUpdatesAvailable[1].replace(/\.$/, ''),
             };
 
+            let requestUrl = 'https://api.wordpress.org/plugins/info/1.0/' + row.slug + '.json';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", requestUrl, true);
+            xhr.onload = function (e) {
+              if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                  pluginData.skipComposer = false;
+                } else {
+                  pluginData.skipComposer = true;
+                }
+              }
+            };
+            xhr.onerror = function (e) {
+              console.error(xhr.statusText);
+            };
+            xhr.send(null);
+
+            console.log(pluginData);
+
             updates.push(pluginData);
         });
     }

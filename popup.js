@@ -201,7 +201,9 @@ const copyComposerPackages = () => {
     let bodyRows = '';
 
     data.map( ( row ) => {
-        bodyRows += '"wpackagist-plugin/' + row.slug + '": "' + row.nextVersion + '",' + "\n";
+        if ( ! row.skipComposer ) {
+            bodyRows += '"wpackagist-plugin/' + row.slug + '": "' + row.nextVersion + '",' + "\n";
+        }
     } );
 
     copyToClipboard( bodyRows );
