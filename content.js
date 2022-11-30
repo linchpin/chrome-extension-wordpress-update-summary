@@ -2,7 +2,11 @@
 chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
         if ( request.action === "getWordPressUpdates" ) {
-            getWordPressUpdates(request, sender, sendResponse);
+            getWordPressUpdates(request, sender, sendResponse, 'updates');
+            return true; // this is required to use sendResponse asynchronously
+        }
+        if ( request.action === "getWordPressCurrent" ) {
+            getWordPressUpdates(request, sender, sendResponse, 'current');
             return true; // this is required to use sendResponse asynchronously
         }
     }
@@ -10,27 +14,38 @@ chrome.runtime.onMessage.addListener(
 
 // Get all references to WordPress plugins that need updating, give the current versionInfo
 // and what version it can be updated to
-const getWordPressUpdates = (request, sender, sendResponse) => {
+const getWordPressUpdates = (request, sender, sendResponse, type) => {
 
     let $body = document.querySelector('body');
 
     // plugin pages
     let updates = [];
     let updateElements = document.querySelectorAll('tr.update');
+    
+    if ( 'current' === type ) {
+        updateElements = document.querySelectorAll('tr.active, tr.inactive');
+    }
 
     [...updateElements].forEach((updateElement) => {
 
-        let versionInfo = updateElement.querySelector('.plugin-version-author-uri').textContent;
-        let updateInfo = updateElement.nextSibling.querySelector('a').textContent;
+        let pluginID = updateElement.id;
+        if ( '' === pluginID ) {
 
-        let pluginData = {
-            plugin: updateElement.querySelector('.plugin-title strong').textContent,
-            slug: updateElement.getAttribute('data-slug'),
-            currentVersion: versionInfo.replace(/[^0-9\.]+/g, '').replace(/\.$/, ''),
-            nextVersion: updateInfo.replace(/[^0-9\.]+/g, '').replace(/\.$/, ''),
-        };
+            let versionInfo = updateElement.querySelector('.plugin-version-author-uri').textContent;
+            let updateInfo = updateElement.nextSibling.querySelector('a').textContent;
 
-        updates.push(pluginData);
+            let directory_array = updateElement.getAttribute('data-plugin').split("/");
+            let directory_slug = directory_array[0];
+
+            let pluginData = {
+                plugin: updateElement.querySelector('.plugin-title strong').textContent,
+                slug: directory_slug,
+                currentVersion: versionInfo.replace(/[^0-9\.]+/g, '').replace(/\.$/, ''),
+                nextVersion: updateInfo.replace(/[^0-9\.]+/g, '').replace(/\.$/, ''),
+            };
+
+            updates.push(pluginData);
+        }
     });
 
     // Only run this on the update-core.php

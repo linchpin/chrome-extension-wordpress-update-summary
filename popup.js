@@ -17,6 +17,7 @@ function getCurrentTabUrl(callback) {
         }
 
         getResults(activeTab);
+        getAllResults(activeTab);
     });
 }
 
@@ -30,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 let currentURL;
 let data = {}
+let dataAll = {}
 
 /**
  * Send a query to our content.js to get our list of WordPress update
@@ -51,6 +53,24 @@ const storeResults = ( response ) => {
         data = response;
     }
 }
+
+/**
+ * Send a query to our content.js to get our list of all Current WordPress versions
+ */
+const getAllResults = () => {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "getWordPressCurrent"}, (response) => {
+            storeAllResults(response);
+        });
+    });
+}
+
+const storeAllResults = ( response ) => {
+    if ( response ) {
+        dataAll = response;
+    }
+}
+
 
 /**
  * Send the results/response to the popup.html
@@ -106,7 +126,9 @@ const addMenuButton = (label, id, className, callback ) => {
 const buildControls = () => {
     addMenuButton( 'Copy HTML Report', 'copy-html', 'button copy-html', copyHTMLReport );
     addMenuButton( 'Copy Changelog Report', 'copy-report', 'button copy-report', copyChangelogReport );
+    addMenuButton( 'Copy Commit Report', 'copy-commit', 'button copy-commit', copyCommitReport );
     addMenuButton( 'Copy Composer/Packagist', 'copy-cli', 'button copy-cli', copyComposerPackages );
+    addMenuButton( 'Copy Composer (Current)', 'copy-composer-current', 'button copy-composer-current', copyComposerCurrent );
 }
 
 /**
@@ -194,6 +216,25 @@ const copyChangelogReport = () => {
 }
 
 /**
+ * Copy for commit message
+ */
+const copyCommitReport = () => {
+
+    let bodyRows = '';
+
+    data.map( ( row ) => {
+
+        if ( ! row.plugin ) {
+            return
+        }
+
+        bodyRows += 'update(plugin): ' + row.plugin + ' (' + row.currentVersion + ' => ' + row.nextVersion + ") \n";
+    } );
+
+    copyToClipboard( bodyRows );
+}
+
+/**
  * Copy a json formatted report to the users clipboard
  */
 const copyComposerPackages = () => {
@@ -202,6 +243,21 @@ const copyComposerPackages = () => {
 
     data.map( ( row ) => {
         bodyRows += '"wpackagist-plugin/' + row.slug + '": "' + row.nextVersion + '",' + "\n";
+    } );
+
+    copyToClipboard( bodyRows );
+}
+
+
+/**
+ * Copy a json formatted report to the users clipboard
+ */
+const copyComposerCurrent = () => {
+
+    let bodyRows = '';
+
+    dataAll.map( ( row ) => {
+        bodyRows += '"wpackagist-plugin/' + row.slug + '": "' + row.currentVersion + '",' + "\n";
     } );
 
     copyToClipboard( bodyRows );
