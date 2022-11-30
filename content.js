@@ -81,5 +81,9 @@ const getWordPressUpdates = (request, sender, sendResponse, type) => {
         });
     }
 
+    if ( 'current' === type ) {
+        updates.sort((a,b)=> (a.slug > b.slug ? 1 : -1))
+    }
+    
     return sendResponse(updates);
 }
